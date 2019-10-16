@@ -16,16 +16,17 @@ if args.type == 'WES':
 	
 	
 	vcf = open(args.vcf)
-	vcf1 = vcf.readline()
+	vcf_first_line = vcf.readline()
 	vcf.close()
-	if vcf1[0] == '#':
-		name = args.output + '/' + 'zapusk.txt'
-		file = open(name,'w')
+	if vcf_first_line[0] == '#':
+		name_output = args.output + '/' + 'zapusk.txt'
+		file = open(name_output,'w')
 		file.write(args.vcf)
 		file.close()
 	else:
 		a = 'cp ' + args.vcf + ' ' + args.output + '/zapusk.txt'
 		subprocess.check_output(a, shell=True)
+
 	a = 'cp script1.py '+ args.output + '/script1.py;' + 'cp Snakefile ' + args.output + '/Snakefile; cd ' + args.output + '; snakemake --use-conda variant_statistics.tab.gz'
 	subprocess.check_output(a, shell=True)
 

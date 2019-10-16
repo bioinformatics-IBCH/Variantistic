@@ -5,7 +5,7 @@ rule check_gz:
 	output:
 		temp("zapusk2.txt")
 	script:
-		"script1.py"
+		"WriteListVcf.py"
 		
 
 rule merge:
