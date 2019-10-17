@@ -33,7 +33,7 @@ rule filter:
 	output:
 		"minDP_10_minGQ_15.vcf"
 	shell: 
-		"/usr/local/bin/bcftools filter --output minDP_10_minGQ_15.vcf -i 'MIN(DP)>10 && MIN(GQ)>15'  {input}"
+		"/usr/local/bin/bcftools +setGT {input} -- -t q -i 'DP<10 || GQ<15' -n . > {output}"
 
 
 rule final:
