@@ -1,10 +1,10 @@
-
+configfile: "config.yaml"
 
 rule check_gz:
 	input:
-		"zapusk.txt"
+		config["no_check"]
 	output:
-		temp("zapusk2.txt")
+		config["zapusk"]
 	shell:
 		"python variantics.py check_gz --vcf {input}"
 		
@@ -46,10 +46,4 @@ rule final:
 	shell:
 		"/usr/local/bin/bcftools query -f'%CHROM\t%POS\t%REF\t%ALT\t%AN\t%AC\t%AC_Hom\t%AC_Hemi\t%AC_Het\n' {input[0]} | sed 's/chr//g' | bgzip -c > {output} && tabix -p vcf {output}"
 
-rule remove:
-	input:
-		rules.final.output
-	output:
-		"variant_statistics.tab.gz"
-	shell:
-		"python variantics.py remove --vcf {input}"
+
