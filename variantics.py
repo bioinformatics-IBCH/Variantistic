@@ -1,53 +1,57 @@
 # -*- coding: utf-8 -*-
 
-from lib import check_gz, propusk
+from lib import check_gz, prepare
 from exitstatus import ExitStatus
 import sys
 import argparse
 import os
 import subprocess
-
-FUNCTION_MAP = { 'check_gz': check_gz,
-			'start': propusk}
+import json
 
 
 def parse_args() -> argparse.Namespace:
-	parser = argparse.ArgumentParser()
-	parser.add_argument('command', choices=FUNCTION_MAP.keys())
-	parser.add_argument("--vcf", type=str, action="store", help="input vcf data")
-	parser.add_argument("--output", type=str, action="store", help="output directory")
-	parser.add_argument("--type",choices=['WES'], type=str, action="store", help="type")
-	return parser.parse_args()
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(help='sub-command help', dest='command')
+
+    pipeline_parser = subparsers.add_parser(
+        'prepare', help='Prepares input genomic data for uploading to RE project',
+    )
+    pipeline_parser.add_argument("--data", type=str, action="store", help="input vcf data")
+    pipeline_parser.add_argument("--output", type=str, action="store", help="output directory")
+    pipeline_parser.add_argument("--type", choices=['WES'], type=str, action="store", help="type")
+
+    return parser.parse_args()
+
+
+def ensure_folder_exists(path):
+    try:
+        os.makedirs(path)
+    except FileExistsError:
+        pass
 
 
 def main() -> ExitStatus:
-	args = parse_args()
-	output = open('config.yaml', 'w')
-	if args.output is not None:
-		output.write('vivod:\n - ')
-		output.write(args.output)
-		output.write('\n')
-	func = FUNCTION_MAP[args.command]
-	func(args)
-	if args.type is not None:
-		vcf = open(args.vcf)
-		vcf_first_line = vcf.readline()
-		output.write('no_check:')
-		if vcf_first_line[0] == '#':
-			output.write('\n - ')
-			output.write(args.vcf)
-		else:
-			output.write('\n - ')
-			output.write(vcf_first_line)
-			for line in vcf:
-				output.write(' - ')
-				output.write(line)
-		vcf.close()
-		a = 'snakemake --use-conda variant_statistics.tab.gz'
-		subprocess.check_output(a, shell=True)
-	output.close()
-	return ExitStatus.success
+    args = parse_args()
+
+    ensure_folder_exists(args.output)
+    data_list_path = os.path.join(args.output, "data_list")
+    config = {
+        "results_folder": args.output,
+        "input_data": "data_list"
+    }
+
+    with open(data_list_path, 'w') as f:
+        f.writelines([
+            os.path.abspath(line.replace("\n", "")) for line in open(args.data, 'r').readlines()
+        ])
+
+    with open('config.json', 'w') as f:
+        json.dump(config, f)
+
+    eval(args.command)(args)
+
+    return ExitStatus.success
 
 
 if __name__ == '__main__':
-	sys.exit(main())
+    sys.exit(main())

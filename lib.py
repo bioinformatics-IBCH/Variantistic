@@ -1,5 +1,3 @@
-
-
 import os
 import subprocess
 
@@ -10,9 +8,9 @@ def remove(args):
     output.close()
     a = ' cp ' + args.vcf + ' ' + os.path.join(output_first_line, 'variant_statistics.tab.gz')
     subprocess.check_output(a, shell=True)
-    w = open('variant_statistics.tab.gz','w')
+    w = open('variant_statistics.tab.gz', 'w')
     w.close()
-    a = ' cp ' + args.vcf +'.tbi ' + os.path.join(output_first_line, 'variant_statistics.tab.gz.tbi')
+    a = ' cp ' + args.vcf + '.tbi ' + os.path.join(output_first_line, 'variant_statistics.tab.gz.tbi')
     subprocess.check_output(a, shell=True)
 
 
@@ -40,3 +38,8 @@ def check_gz(args):
         file.write('\n - ')
         file.write(line)
     return 0
+
+
+def prepare(args):
+    a = 'snakemake variant_statistics.tab.gz'
+    subprocess.check_output(a, shell=True)
