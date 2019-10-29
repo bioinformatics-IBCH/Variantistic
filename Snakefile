@@ -1,17 +1,9 @@
-configfile: "config.yaml"
-
-rule check_gz:
-	input:
-		config["no_check"]
-	output:
-		config["zapusk"]
-	shell:
-		"python variantics.py check_gz --vcf {input}"
-		
+configfile: "config.json"
+workdir: config["results_folder"]
 
 rule merge:
 	input:
-		rules.check_gz.output
+		config["input_data"]
 	output:
 		temp("Horde.vcf")
 	shell:
@@ -32,17 +24,16 @@ rule filter:
 	input: 
 		rules.start_extract.output		
 	output:
-		"minDP_10_minGQ_15.vcf"
+		temp("filtered_minDP_10_minGQ_15.vcf")
 	shell: 
-		"/usr/local/bin/bcftools +setGT {input} -- -t q -i 'DP<10 || GQ<15' -n . > {output}"
+		"/usr/local/bin/bcftools +setGT {input} -- -t q -i 'DP<4' -n . > {output}"
 
 
 rule final:
 	input:
 		rules.filter.output
-		
 	output:
-		"1variant_statistics.tab.gz"		
+		"variant_statistics.tab.gz"
 	shell:
 		"/usr/local/bin/bcftools query -f'%CHROM\t%POS\t%REF\t%ALT\t%AN\t%AC\t%AC_Hom\t%AC_Hemi\t%AC_Het\n' {input[0]} | sed 's/chr//g' | bgzip -c > {output} && tabix -p vcf {output}"
 
