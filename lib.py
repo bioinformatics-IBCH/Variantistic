@@ -1,25 +1,15 @@
 import os
 import subprocess
+from pysam import VariantFile
+import pandas
+import numpy as np
+import matplotlib.pyplot as plt
 
 
-def remove(args):
-    output = open('Const.txt')
-    output_first_line = output.readline()
-    output.close()
-    a = ' cp ' + args.vcf + ' ' + os.path.join(output_first_line, 'variant_statistics.tab.gz')
-    subprocess.check_output(a, shell=True)
-    w = open('variant_statistics.tab.gz', 'w')
-    w.close()
-    a = ' cp ' + args.vcf + '.tbi ' + os.path.join(output_first_line, 'variant_statistics.tab.gz.tbi')
-    subprocess.check_output(a, shell=True)
-
-
-def propusk(args):
-    return 0
 
 
 def check_gz(args):
-    zapusk = open('config.yaml')
+    zapusk = open('config.json')
     A = []
 
     for line in zapusk:
@@ -43,3 +33,25 @@ def check_gz(args):
 def prepare(args):
     a = 'snakemake variant_statistics.tab.gz'
     subprocess.check_output(a, shell=True)
+
+def hist(args):
+
+    vcf = VariantFile(args.data)
+
+    x = args.meta
+    metadata = pandas.read_csv(x, sep=',')  # начало сортировки
+    a = ("Sample name", "Age")
+    B = metadata.loc[:, a]
+
+    for rec in vcf.fetch():
+        DPM = []
+        A = rec.samples.keys()
+        try:
+            for i in A:
+                DPM.append(rec.samples[i]["DP"])
+            A, B = np.histogram(DPM, bins=[i for i in range(1, 200, 10)])   # создание и запись гистограмм
+            #plt.bar(B[:-1], A, width=1)
+            #plt.xlim(min(B), max(B))                                       # нарисование гистограмм
+            #plt.show()
+        except:
+            print('Не работает!')
