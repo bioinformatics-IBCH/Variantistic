@@ -37,21 +37,43 @@ def prepare(args):
 def hist(args):
 
     vcf = VariantFile(args.data)
-
-    x = args.meta
-    metadata = pandas.read_csv(x, sep=',')  # начало сортировки
-    a = ("Sample name", "Age")
-    B = metadata.loc[:, a]
-
+    csv = pandas.read_csv(args.meta, sep=',')
     for rec in vcf.fetch():
         DPM = []
+        ACM = []
+        ANM = []
         A = rec.samples.keys()
-        try:
-            for i in A:
-                DPM.append(rec.samples[i]["DP"])
-            A, B = np.histogram(DPM, bins=[i for i in range(1, 200, 10)])   # создание и запись гистограмм
-            #plt.bar(B[:-1], A, width=1)
-            #plt.xlim(min(B), max(B))                                       # нарисование гистограмм
-            #plt.show()
-        except:
-            print('Не работает!')
+
+        for i in A:
+            AC = 0
+            AN = 0
+            DPM.append(rec.samples[i]["DP"])
+            GT = rec.samples[i]["GT"]
+
+            for j in GT:
+
+                if j == 1:
+                    AC += 1
+                    AN += 1
+                elif j == 0:
+                    AN += 1
+            ACM.append(AC)
+            ANM.append(AN)
+        result = pandas.DataFrame({
+            "Age": csv.Age,
+            "Phenotype": csv.Phenotype,
+            "Sex": csv.Sex,
+            "DiseaseId": csv.DiseaseId,
+            "Relativeness": csv.Relativeness,
+            "DP": DPM,
+            "AN": ANM,
+            "AC": ACM
+        }, index=csv["Sample name"])
+
+
+
+        result = np.array(result)
+
+        bins = np.asarray([10, 2, 2, 30, 40, 40, 50, 50])              # корзины надо честно прописать
+
+        B = np.histogramdd(result, bins=bins, range=([1, 2], [1, 2], [1, 2], [1, 2], [1, 2], [1, 2], [1, 2], [1, 2]))   # range нужно наверное, тоже нормально прописать
