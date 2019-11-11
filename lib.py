@@ -6,12 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-
-
 def check_gz(args):
-    zapusk = open('config.json')
+    zapusk = open(args.data)
     A = []
-
     for line in zapusk:
         a = 'grabix check' + line
         if subprocess.check_output(a, shell=True):
@@ -22,11 +19,10 @@ def check_gz(args):
         else:
             A.append(line)
     zapusk.close()
-    file = open('config.yaml', 'a')
-    file.write('zapusk:')
-    for line in A:
-        file.write('\n - ')
-        file.write(line)
+    data_list_path = "data_list"
+    with open(data_list_path, 'w') as f:
+        for line in A:
+            f.writelines([os.path.abspath(line.replace("\n", "")) + "\n"])
     return 0
 
 
@@ -34,10 +30,12 @@ def prepare(args):
     a = 'snakemake variant_statistics.tab.gz'
     subprocess.check_output(a, shell=True)
 
+
 def hist(args):
 
     vcf = VariantFile(args.data)
     csv = pandas.read_csv(args.meta, sep=',')
+    output_vcf = open(args.output + '/MergeWithHist.vcf', 'w')
     for rec in vcf.fetch():
         DPM = []
         ACM = []
@@ -47,7 +45,10 @@ def hist(args):
         for i in A:
             AC = 0
             AN = 0
-            DPM.append(rec.samples[i]["DP"])
+            if rec.samples[i]["DP"] is not None:
+                DPM.append(rec.samples[i]["DP"])
+            else:
+                DPM.append(0)
             GT = rec.samples[i]["GT"]
 
             for j in GT:
@@ -60,20 +61,19 @@ def hist(args):
             ACM.append(AC)
             ANM.append(AN)
         result = pandas.DataFrame({
-            "Age": csv.Age,
-            "Phenotype": csv.Phenotype,
-            "Sex": csv.Sex,
-            "DiseaseId": csv.DiseaseId,
-            "Relativeness": csv.Relativeness,
-            "DP": DPM,
-            "AN": ANM,
-            "AC": ACM
+            "Age": csv.Age.tolist(),
+            "DiseaseId": csv.DiseaseId.tolist(),
+            # "Relativeness": csv.Relativeness,
+            # "DP": DPM,
+            # "AN": ANM,
+            #         "AC": ACM
         }, index=csv["Sample name"])
-
-
-
         result = np.array(result)
 
-        bins = np.asarray([10, 2, 2, 30, 40, 40, 50, 50])              # корзины надо честно прописать
-
-        B = np.histogramdd(result, bins=bins, range=([1, 2], [1, 2], [1, 2], [1, 2], [1, 2], [1, 2], [1, 2], [1, 2]))   # range нужно наверное, тоже нормально прописать
+        bins = np.asarray([4, 4])                     # бины надо построить
+        A = np.histogramdd(result, bins=bins, weights=DPM)
+        B = np.histogramdd(result, bins=bins, weights=ANM)
+        C = np.histogramdd(result, bins=bins, weights=ACM)
+        a = (str(rec) + ';' + str(A) + ';' + str(B) + ';' + str(C)).replace('\n', '\t')    # здесь строится строка для записи, напиши, если она должна строиться по-другому
+        output_vcf.write(a)
+    output_vcf.close()
