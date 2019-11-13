@@ -1,9 +1,19 @@
 configfile: "config.json"
 workdir: config["results_folder"]
+var = config["var"]
+out = config["results_folder"]
+rule check_gz:
+	input:
+		config["input_data"],
+		
+	output: 
+		config["Upgrade_input_data"]
+	shell:
+		"python {var} check_gz --data {out}/{input}"
 
 rule merge:
 	input:
-		config["input_data"]
+		rules.check_gz.output
 	output:
 		temp("Horde.vcf")
 	shell:
@@ -28,6 +38,7 @@ rule filter:
 	shell: 
 		"/usr/local/bin/bcftools +setGT {input} -- -t q -i 'DP<4' -n . > {output}"
 
+# rule hist
 
 rule final:
 	input:

@@ -20,6 +20,11 @@ def parse_args() -> argparse.Namespace:
     pipeline_parser.add_argument("--output", type=str, action="store", help="output directory")
     pipeline_parser.add_argument("--type", choices=['WES'], type=str, action="store", help="type")
 
+    check_gz_parser = subparsers.add_parser(
+        'check_gz', help='Check vcfs',
+    )
+    check_gz_parser.add_argument("--data", type=str, action="store", help="input data list")
+    # check_gz_parser.add_argument("--output", type=str, action="store", help="output directory")
     return parser.parse_args()
 
 
@@ -32,21 +37,23 @@ def ensure_folder_exists(path):
 
 def main() -> ExitStatus:
     args = parse_args()
+    if args.command == 'prepare':
+        ensure_folder_exists(args.output)
+        data_list_path = os.path.join(args.output, "data_list")
+        config = {
+            "var":  os.path.join(os.getcwd(), 'variantics.py'),
+            "results_folder": args.output,
+            "input_data": "data_list",
+            "Upgrade_input_data": "data_list1"
+        }
 
-    ensure_folder_exists(args.output)
-    data_list_path = os.path.join(args.output, "data_list")
-    config = {
-        "results_folder": args.output,
-        "input_data": "data_list"
-    }
+        with open(data_list_path, 'w') as f:
+            f.writelines([
+                os.path.abspath(line.replace("\n", "")) + "\n" for line in open(args.data, 'r').readlines()
+            ])
 
-    with open(data_list_path, 'w') as f:
-        f.writelines([
-            os.path.abspath(line.replace("\n", "")) for line in open(args.data, 'r').readlines()
-        ])
-
-    with open('config.json', 'w') as f:
-        json.dump(config, f)
+        with open('config.json', 'w') as f:
+            json.dump(config, f)
 
     eval(args.command)(args)
 
