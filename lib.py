@@ -1,8 +1,5 @@
-from pysam import VariantFile
-import pysam
 import pandas 
 import numpy as np
-import matplotlib.pyplot as plt
 from cyvcf2 import VCF, Writer
 import os
 import subprocess
@@ -31,15 +28,20 @@ for rec in vcf_in:
         else:
             DPM.append(0)
     
-    GT = rec.format('GT')    # GT дает массив в байтах /x04/x04 пока что не знаю как это исправить
-    AC = 0
-    AN = 0
+    GT = rec.gt_types   
+    
     for sample in GT:
-        if sample == 1:
+        AC = 0
+        AN = 0
+        if sample == 0:
+            AC += 2
+            AN += 2
+        elif sample == 1:
             AC += 1
-            AN += 1
-        elif sample == 0:
-            AN += 1
+            AN += 2
+        elif sample == 3:
+            AN += 2
+            
         ACM.append(AC)
         ANM.append(AN)
     
