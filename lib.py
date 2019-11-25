@@ -35,13 +35,13 @@ for rec in vcf_in:
         AN = 0
         if sample == 0:
             AC += 2
-            AN += 2
+            
         elif sample == 1:
             AC += 1
             AN += 2
         elif sample == 3:
             AN += 2
-            
+            AN += 2
         ACM.append(AC)
         ANM.append(AN)
     
