@@ -9,6 +9,7 @@ import pytest
 
 def writing(vhod,meta,vihod):
 	csv = pandas.read_csv(meta, sep=',')
+	print(vhod)
 	vcf_in = VCF(vhod)
 	vcf_in.add_info_to_header(
 		{
