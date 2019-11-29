@@ -7,7 +7,7 @@ import json
 import pytest
 
 
-def writing(vhod,meta):
+def writing(vhod,meta,vihod):
 	csv = pandas.read_csv(meta, sep=',')
 	vcf_in = VCF(vhod)
 	vcf_in.add_info_to_header(
@@ -19,7 +19,7 @@ def writing(vhod,meta):
 		}
 	)
 
-	vcf_out = Writer("A.processed.vcf", vcf_in)
+	vcf_out = Writer(os.path.abspath(vihod), vcf_in)
 	for rec in vcf_in:
 		ANM = []
 		ACM = []
@@ -94,5 +94,5 @@ def writing(vhod,meta):
 		vcf_out.write_record(rec)
 	vcf_in.close()
 	vcf_out.close()
-	print('Done!S')
-	return vcf_in
+
+	return os.path.abspath(vihod)

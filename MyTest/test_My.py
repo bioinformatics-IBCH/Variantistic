@@ -1,4 +1,4 @@
-
+import os
 import pytest
 from hist.lib import writing
 
@@ -8,8 +8,8 @@ from hist.lib import writing
     
 ])
 def test_sqrt(vhod, meta, expected):
-    print(writing(vhod,meta))
-    file = open(writing(vhod,meta))
+    vihod = os.path.abspath('/home/Welekie/newworkspace/variantics/MyTest/subdir/A.processed.vcf')
+    file = open(writing(vhod,meta, vihod))
     f = open(expected)
     for line in f:
         line1 = file.readline()
