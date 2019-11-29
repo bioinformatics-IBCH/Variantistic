@@ -19,7 +19,7 @@ def writing(vhod,meta,vihod):
 		}
 	)
 
-	vcf_out = Writer(os.path.abspath(vihod), vcf_in)
+	vcf_out = Writer(vihod, vcf_in)
 	for rec in vcf_in:
 		ANM = []
 		ACM = []
@@ -95,4 +95,4 @@ def writing(vhod,meta,vihod):
 	vcf_in.close()
 	vcf_out.close()
 
-	return os.path.abspath(vihod)
+	return vihod
