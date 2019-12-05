@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from lib import check_gz, prepare
+from variantics.lib import check_gz, prepare
 from exitstatus import ExitStatus
 import sys
 import argparse
 import os
 import subprocess
 import json
-
 
 
 def parse_args() -> argparse.Namespace:
@@ -42,7 +41,7 @@ def main() -> ExitStatus:
         ensure_folder_exists(args.output)
         data_list_path = os.path.join(args.output, "data_list")
         config = {
-            "var":  str(os.path.dirname(os.path.realpath(sys.argv[0]))) + '/variantics.py' ,
+            "var": str(os.path.dirname(os.path.realpath(sys.argv[0]))) + '/variantics.py',
             "results_folder": args.output,
             "input_data": "data_list",
             "upgrade_input_data": "data_list1"
