@@ -1,6 +1,6 @@
 import os
 import pytest
-from hist.lib import writing
+from hist.lib import hist
 import numpy as np
 import pandas
 
@@ -10,7 +10,7 @@ import pandas
 ])
 def test_zapis(vhod, meta, expected):
     vihod = os.path.abspath('/home/Welekie/newworkspace/variantics/MyTest/subdir/A.processed.vcf')
-    file = open(writing(vhod,meta, vihod))
+    file = open(hist(vhod,meta, vihod))
     f = open(expected)
     for line in f:
         line1 = file.readline()
@@ -161,3 +161,4 @@ def test_Int(DPM, meta, expected):
     bins = np.asarray([4, 4])
     A = np.histogramdd(result, bins=bins, weights=DPM)
     assert A[0].tolist() == expected
+
