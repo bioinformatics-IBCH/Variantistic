@@ -2,7 +2,7 @@ import pandas
 import numpy as np
 from cyvcf2 import VCF, Writer
 import json
-
+from sklearn.preprocessing import OrdinalEncoder
 
 def hist(vhod,meta,vihod):
 	vcf_in = VCF(vhod)
@@ -28,6 +28,7 @@ def hist(vhod,meta,vihod):
 
 def makeHist(meta,DPM1,GT):
 
+	enc = OrdinalEncoder()
 	csv = pandas.read_csv(meta, sep=',')
 	ANM = []
 	ACM = []
@@ -51,11 +52,16 @@ def makeHist(meta,DPM1,GT):
 			AC += 2
 		ACM.append(AC)
 		ANM.append(AN)
+	X = csv["Sex", "Relativeness"]
+	enc.fit(X)
+	enc.transform(X)
 	result = pandas.DataFrame({
 		"Age": csv.Age.tolist(),
 		"DiseaseId": csv.DiseaseId.tolist(),
-		#         "Relativeness": csv.Relativeness,
+		"Relativeness": X.Relativeness,
+		"Sex": X.Sex
 	}, index=csv["Sample name"])
+
 	result = np.array(result)
 	bins = np.asarray([4, 4])
 	try:
