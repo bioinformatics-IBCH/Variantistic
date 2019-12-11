@@ -1,11 +1,14 @@
 import os
 import pytest
-from hist.lib import hist
+from hist.lib import hist, makeHist
+
 import numpy as np
 import pandas
 
 @pytest.mark.parametrize('vhod, meta, expected', [
-    ("/home/Welekie/newworkspace/variantics/MyTest/subdir/A.vcf", "/home/Welekie/newworkspace/variantics/MyTest/subdir/testik.csv","/home/Welekie/newworkspace/variantics/MyTest/subdir/A.exam.vcf"),
+    ("/home/Welekie/newworkspace/variantics/MyTest/subdir/A.vcf",
+     "/home/Welekie/newworkspace/variantics/MyTest/subdir/testik.csv",
+     "/home/Welekie/newworkspace/variantics/MyTest/subdir/A.exam.vcf"),
     
 ])
 def test_zapis(vhod, meta, expected):
@@ -29,16 +32,9 @@ def test_zapis(vhod, meta, expected):
 
 
 def test_DP(DPM, meta, expected):
-    csv = pandas.read_csv(meta, sep=',')
-    result = pandas.DataFrame({
-        "Age": csv.Age.tolist(),
-        "DiseaseId": csv.DiseaseId.tolist(),
-        #         "Relativeness": csv.Relativeness,
-    }, index=csv["Sample name"])
-    result = np.array(result)
-    bins = np.asarray([4, 4])
-    A = np.histogramdd(result, bins=bins, weights=DPM)
-    assert A[0].tolist() == expected
+    Var = makeHist(meta,DPM)
+    A = Var['DP_HIST']['hist']
+    assert A.tolist() == expected
 
 @pytest.mark.parametrize('DPM, meta, expected', [
     ([99, 99, 99, 0, 0, 99, 99, 0, 99, 99, 0, 99, 99, 0, 99, 99, 99, 0, 0, 99, 0, 99, 0, 0, 99, 99, 99, 99, 99, 99, 0, 0, 0, 99, 99, 0, 99, 99, 0, 0, 99, 99, 99, 0],
@@ -46,19 +42,10 @@ def test_DP(DPM, meta, expected):
      [[10.0, 33.0, 56.0, 79.0, 102.0], [1.0, 3.5, 6.0, 8.5, 11.0]])])
 
 
-def test_DPbins(DPM, meta, expected):
-    csv = pandas.read_csv(meta, sep=',')
-    result = pandas.DataFrame({
-        "Age": csv.Age.tolist(),
-        "DiseaseId": csv.DiseaseId.tolist(),
-        #         "Relativeness": csv.Relativeness,
-    }, index=csv["Sample name"])
-    result = np.array(result)
-    bins = np.asarray([4, 4])
-    A = np.histogramdd(result, bins=bins, weights=DPM)
-    for i in range(len(A[1])):
-        for j in range(len(A[1][i])):
-            assert A[1][i][j] == expected[i][j]
+def test_DP(DPM, meta, expected):
+    Var = makeHist(meta,DPM)
+    A = Var['DP_HIST']['edges']
+    assert A.tolist() == expected
 
 @pytest.mark.parametrize('ANM, meta, expected', [
     ([2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 0, 0, 2, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 2, 2, 2, 0],
@@ -67,37 +54,23 @@ def test_DPbins(DPM, meta, expected):
 
 
 def test_AN(ANM, meta, expected):
-    csv = pandas.read_csv(meta, sep=',')
-    result = pandas.DataFrame({
-        "Age": csv.Age.tolist(),
-        "DiseaseId": csv.DiseaseId.tolist(),
-        #         "Relativeness": csv.Relativeness,
-    }, index=csv["Sample name"])
-    result = np.array(result)
-    bins = np.asarray([4, 4])
-    B = np.histogramdd(result, bins=bins, weights=ANM)
-    assert B[0].tolist() == expected
+    Var = makeHist(meta,ANM)
+    A = Var['AN_HIST']['hist']
+    assert A.tolist() == expected
+
+
 
 @pytest.mark.parametrize('ANM, meta, expected', [
-    ( [2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 0, 0, 2, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 2, 2, 2, 0],
+    ([2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 0, 0, 2, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 2, 2, 2, 0],
      "/home/Welekie/newworkspace/variantics/MyTest/subdir/testik.csv",
-     [[10.0, 33.0, 56.0, 79.0, 102.0], [1.0, 3.5, 6.0, 8.5, 11.0]])
+    [[10.0, 33.0, 56.0, 79.0, 102.0], [1.0, 3.5, 6.0, 8.5, 11.0]])
 ])
 
 
-def test_ANbins(ANM, meta, expected):
-    csv = pandas.read_csv(meta, sep=',')
-    result = pandas.DataFrame({
-        "Age": csv.Age.tolist(),
-        "DiseaseId": csv.DiseaseId.tolist(),
-        #         "Relativeness": csv.Relativeness,
-    }, index=csv["Sample name"])
-    result = np.array(result)
-    bins = np.asarray([4, 4])
-    B = np.histogramdd(result, bins=bins, weights=ANM)
-    for i in range(len(B[1])):
-        for j in range(len(B[1][i])):
-            assert B[1][i][j] == expected[i][j]
+def test_AN(ANM, meta, expected):
+    Var = makeHist(meta,ANM)
+    A = Var['AN_HIST']['edges']
+    assert A.tolist() == expected
 
 
 @pytest.mark.parametrize('ACM, meta, expected', [
@@ -107,58 +80,21 @@ def test_ANbins(ANM, meta, expected):
 
 
 def test_AC(ACM, meta, expected):
-    csv = pandas.read_csv(meta, sep=',')
-    result = pandas.DataFrame({
-        "Age": csv.Age.tolist(),
-        "DiseaseId": csv.DiseaseId.tolist(),
-        #         "Relativeness": csv.Relativeness,
-    }, index=csv["Sample name"])
-    result = np.array(result)
-    bins = np.asarray([4, 4])
-    C = np.histogramdd(result, bins=bins, weights=ACM)
-    assert C[0].tolist() == expected
+    Var = makeHist(meta,ACM)
+    A = Var['AC_HIST']['hist']
+    assert A.tolist() == expected
+
+
 
 @pytest.mark.parametrize('ACM, meta, expected', [
-    ([1, 0, 2, 0, 0, 2, 2, 0, 2, 2, 1, 2, 2, 0, 2, 2, 2, 0, 0, 2, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 2, 2, 2, 0],
+    ([1, 0, 2, 0, 0, 2, 2, 0, 2, 2, 1, 2, 2, 0, 2, 2, 2, 0, 0, 2, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 2, 2, 2, 0] ,
      "/home/Welekie/newworkspace/variantics/MyTest/subdir/testik.csv",
-     [[10.0, 33.0, 56.0, 79.0, 102.0], [1.0, 3.5, 6.0, 8.5, 11.0]])
+    [[10.0, 33.0, 56.0, 79.0, 102.0], [1.0, 3.5, 6.0, 8.5, 11.0]])
 ])
 
 
-def test_ACbins(ACM, meta, expected):
-    csv = pandas.read_csv(meta, sep=',')
-    result = pandas.DataFrame({
-        "Age": csv.Age.tolist(),
-        "DiseaseId": csv.DiseaseId.tolist(),
-        #         "Relativeness": csv.Relativeness,
-    }, index=csv["Sample name"])
-    result = np.array(result)
-    bins = np.asarray([4, 4])
-    C = np.histogramdd(result, bins=bins, weights=ACM)
-    for i in range(len(C[1])):
-        for j in range(len(C[1][i])):
-            assert C[1][i][j] == expected[i][j]
-
-@pytest.mark.parametrize('DPM, meta, expected', [
-    ([99, 99, 99, 0, 0, 99, 99, 0, 99, 99, 0, 99, 99, 0, 99, 99, 99, 0, 0, 99, 0, 99, 0, 0, 99, 99, 99, 99, 99, 99, 0, 0, 0, 99, 99, 0, 99, 99, 0, 0, 99, 99, 99, 0],
-     "/home/Welekie/newworkspace/variantics/MyTest/subdir/testik.csv",
-     [[198.0, 99.0, 495.0, 99.0], [198.0, 0.0, 0.0, 198.0], [99.0, 99.0, 495.0, 198.0], [99.0, 99.0, 99.0, 198.0]]),
-    ([12, 988, 99, 123, 0, 99, 99, 10, 99, 1, 0, 99, 29, 0, 99, 49, 49, 0, 36, 94, 0, 99, 0, 3, 99, 99, 99, 99, 9, 99, 0, 0, 0, 909, 99, 0, 99, 99, 0, 0, 99, 99, 99, 0],
-     "/home/Welekie/newworkspace/variantics/MyTest/subdir/testik.csv",
-     [[198.0, 99.0, 440.0, 99.0], [100.0, 123.0, 10.0, 128.0], [988.0, 99.0, 495.0, 1008.0], [12.0, 138.0, 9.0, 148.0]])
-
-])
-
-
-def test_Int(DPM, meta, expected):
-    csv = pandas.read_csv(meta, sep=',')
-    result = pandas.DataFrame({
-        "Age": csv.Age.tolist(),
-        "DiseaseId": csv.DiseaseId.tolist(),
-        #         "Relativeness": csv.Relativeness,
-    }, index=csv["Sample name"])
-    result = np.array(result)
-    bins = np.asarray([4, 4])
-    A = np.histogramdd(result, bins=bins, weights=DPM)
-    assert A[0].tolist() == expected
+def test_AC(ACM, meta, expected):
+    Var = makeHist(meta,ACM)
+    A = Var['AC_HIST']['hist']
+    assert A.tolist() == expected
 
