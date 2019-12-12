@@ -1,2 +1,2 @@
 import numpy as np
-bins = np.asarray([4,4,4,4,4])
+Bins = np.asarray([4,1,4,4,2])

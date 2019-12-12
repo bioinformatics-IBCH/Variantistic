@@ -3,40 +3,40 @@ import numpy as np
 from cyvcf2 import VCF, Writer
 import json
 from sklearn.preprocessing import OrdinalEncoder
-from hist.Const import bins
+from hist.Const import Bins
 
 def hist(vhod,meta,vihod):
-	vcf_in = reading(vhod)
-	vcf_out = Writer(vihod, vcf_in)
-	result = prepare_meta(meta)
-	for rec in vcf_in:
-		DPM = prepare_DP(rec)
-		A = makeHist(result,DPM)
-		ANM = prepare_AN(rec)
-		B = makeHist(result, ANM)
-		ACM = prepare_AC(rec)
-		C = makeHist(result, ACM)
-		VARIANTICS_HIST = json.dumps(
-			{
-				'DP_HIST': {
-					'hist': A[0].tolist(),
-					'edges': A[1]
-				},
-				'AN_HIST': {
-					'hist': B[0].tolist(),
-					'edges': B[1]
-				},
-				'AC_HIST': {
-					'hist': C[0].tolist(),
-					'edges': C[1]
-				}
-			}
-		)
-		rec.INFO["VARIANTICS_HIST"] = VARIANTICS_HIST
-		vcf_out.write_record(rec)
-	vcf_in.close()
-	vcf_out.close()
-	return vihod
+    vcf_in = reading(vhod)
+    vcf_out = Writer(vihod, vcf_in)
+    result,catalogs = prepare_meta(meta)
+    for rec in vcf_in:
+        DPM = prepare_DP(rec)
+        A = makeHist(result,DPM)
+        ANM = prepare_AN(rec)
+        B = makeHist(result, ANM)
+        ACM = prepare_AC(rec)
+        C = makeHist(result, ACM)
+        VARIANTICS_HIST = json.dumps(
+            {
+                'DP_HIST': {
+                    'hist': A[0].tolist(),
+                    'edges': inverse(A[1],catalogs)
+                },
+                'AN_HIST': {
+                    'hist': B[0].tolist(),
+                    'edges': inverse(B[1],catalogs)
+                },
+                'AC_HIST': {
+                    'hist': C[0].tolist(),
+                    'edges': inverse(C[1],catalogs)
+                }
+            }
+        )
+        rec.INFO["VARIANTICS_HIST"] = VARIANTICS_HIST
+        vcf_out.write_record(rec)
+    vcf_in.close()
+    vcf_out.close()
+    return vihod
 
 
 def reading(vhod):
@@ -53,25 +53,25 @@ def reading(vhod):
 
 
 def prepare_meta(meta):
-	csv = pandas.read_csv(meta, sep=',')
-	enc = OrdinalEncoder()
-	X = csv.loc[:, ("Sex", "Phenotype")]
-	enc.fit(X)
-	Y = enc.transform(X)
-	sex = []
-	Phen = []
-	for i in Y:
-		sex.append(i[0])
-		Phen.append(i[1])
-	result = pandas.DataFrame({
-		"Age": csv.Age.tolist(),
-		"Phenotype": Phen,
-		"DiseaseId": csv.DiseaseId.tolist(),
-		"Relativeness": csv.Relativeness.tolist(),
-		"Sex": sex
-	}, index=csv["Sample name"])
-	result = np.array(result)
-	return result
+    csv = pandas.read_csv(meta, sep=',')
+    enc = OrdinalEncoder()
+    X = csv.loc[:, ("Sex", "Phenotype")]
+    enc.fit(X)
+    Y = enc.transform(X)
+    sex = []
+    Phen = []
+    for i in Y:
+        sex.append(i[0])
+        Phen.append(i[1])
+    result = pandas.DataFrame({
+        "Age": csv.Age.tolist(),
+        "Phenotype": Phen,
+        "DiseaseId": csv.DiseaseId.tolist(),
+        "Relativeness": csv.Relativeness.tolist(),
+        "Sex": sex
+    }, index=csv["Sample name"])
+    result = np.array(result)
+    return result,enc.categories_
 
 
 def prepare_DP(rec):
@@ -114,9 +114,22 @@ def prepare_AC(rec):
 
 
 def makeHist(result,weight):
-	A = np.histogramdd(result, bins=bins, weights=weight)
+	A = np.histogramdd(result, bins=Bins, weights=weight)
 	for j in range(len(A[1])):
 		A[1][j] = A[1][j].tolist()
 	return A
+
+def inverse(MasBin,categories):
+    MidMas = [MasBin[1],MasBin[4]]
+    NewMasBin =[]
+    for j in range(len(MidMas)):
+        for i in range(len(MidMas[j])):
+            MidMas[j][i] = categories[j][i]
+    NewMasBin.append(MasBin[0])
+    NewMasBin.append(MidMas[0])
+    NewMasBin.append(MasBin[2])
+    NewMasBin.append(MasBin[3])
+    NewMasBin.append(MidMas[1])
+    return NewMasBin
 def writing():
 	return 0
