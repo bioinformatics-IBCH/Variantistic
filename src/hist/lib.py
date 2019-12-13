@@ -3,7 +3,7 @@ import numpy as np
 from cyvcf2 import VCF, Writer
 import json
 from sklearn.preprocessing import OrdinalEncoder
-from hist.Const import Bins
+from hist.Const import Bins, categorial_metadata, Sample_name
 
 def hist(vhod,meta,vihod):
     vcf_in = reading(vhod)
@@ -44,7 +44,7 @@ def reading(vhod):
 	vcf_in.add_info_to_header(
 		{
 			'ID': 'VARIANTICS_HIST',
-			'Description': '...',
+			'Description': 'Dict of histograms',
 			'Type': 'String',
 			'Number': 1
 		}
@@ -55,66 +55,43 @@ def reading(vhod):
 def prepare_meta(meta):
     csv = pandas.read_csv(meta, sep=',')
     enc = OrdinalEncoder()
-    X = csv.loc[:, ("Sex", "Phenotype")]
+    X = csv.loc[:, categorial_metadata]
     enc.fit(X)
-    Y = enc.transform(X)
-    sex = []
-    Phen = []
-    for i in Y:
-        sex.append(i[0])
-        Phen.append(i[1])
-    result = pandas.DataFrame({
-        "Age": csv.Age.tolist(),
-        "Phenotype": Phen,
-        "DiseaseId": csv.DiseaseId.tolist(),
-        "Relativeness": csv.Relativeness.tolist(),
-        "Sex": sex
-    }, index=csv["Sample name"])
-    result = np.array(result)
-    return result,enc.categories_
+    Y = pandas.DataFrame(enc.transform(X), columns=categorial_metadata)
+    for feature in categorial_metadata:
+        csv[feature] = Y[feature]
+    csv.index = csv[Sample_name]
+    csv = csv.iloc[:,1:]
+    return csv,enc.categories_
 
 
 def prepare_DP(rec):
-	DPM1 = rec.format('DP')
-	DPM = []
-	for i in range(len(DPM1)):
-		if DPM1[i][0] >= 0:
-			DPM.append(DPM1[i][0])
-		else:
-			DPM.append(0)
-	return DPM
+	return [
+        max(rec[0], 0) for rec in rec.format('DP')
+    ]
 
 
 def prepare_AN(rec):
-	GT = rec.gt_types
-	ANM = []
-	for sample in GT:
-		AN = 0
-		if sample == 0:
-			AN += 2
-		elif sample == 1:
-			AN += 2
-		elif sample == 3:
-			AN += 2
-		ANM.append(AN)
-	return ANM
+	return [
+        2 if sample != 2 else 0 for sample in rec.gt_types
+    ]
 
 
 def prepare_AC(rec):
-	GT = rec.gt_types
-	ACM = []
-	for sample in GT:
-		AC = 0
-		if sample == 1:
-			AC += 1
-		elif sample == 3:
-			AC += 2
-		ACM.append(AC)
-	return ACM
+    # gt_types is array of 0,1,2,3==HOM_REF, HET, UNKNOWN, HOM_ALT
+	gt2ac = {
+        1: 1,
+        3: 2,
+        2: 0,
+        0: 0
+    }
+	return [
+        gt2ac[gt] for gt in rec.gt_types
+    ]
 
 
 def makeHist(result,weight):
-	A = np.histogramdd(result, bins=Bins, weights=weight)
+	A = np.histogramdd(result.values, bins=Bins, weights=weight)
 	for j in range(len(A[1])):
 		A[1][j] = A[1][j].tolist()
 	return A
