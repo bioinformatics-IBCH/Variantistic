@@ -35,21 +35,9 @@ def validation(csv):
 		b = b * i
 	if len(csv.index) < b:
 		return False
-    flag = proverka(CheckHist[0])
-    if flag > 0:
-        return False
-    else:
-        return True
+	return check_has_single_sample(np.array(checkWeight))
 
 
 
-def proverka(check):
-	""" Рекурсивно проверяет количество образцов в корзине. Возвращает количество ячеек в которых всего 1 элемент"""
-    flag =0
-    if  not isinstance(check[0],(list, tuple)):
-        for i in check:
-            flag = flag + proverka(i)
-    else:
-        if int(sum(check)) == 1:
-            flag = 1
-    return flag
+def check_has_single_sample(hist_values):
+    return 1 in hist_values.ravel()
