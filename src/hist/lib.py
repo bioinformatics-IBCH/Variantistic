@@ -100,8 +100,9 @@ def inverse(MasBin,categories):
     MidMas = [MasBin[1],MasBin[4]]
     NewMasBin =[]
     for j in range(len(MidMas)):
-        for i in range(len(MidMas[j])):
+        for i in range(len(MidMas[j]) - 1):
             MidMas[j][i] = categories[j][i]
+        MidMas[j].po
     NewMasBin.append(MasBin[0])
     NewMasBin.append(MidMas[0])
     NewMasBin.append(MasBin[2])
