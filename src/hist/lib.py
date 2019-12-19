@@ -89,7 +89,6 @@ def prepare_AC(rec):
         gt2ac[gt] for gt in rec.gt_types
     ]
 
-
 def makeHist(result,weight):
 	A = np.histogramdd(result.values, bins=Bins, weights=weight)
 	for j in range(len(A[1])):
@@ -102,7 +101,7 @@ def inverse(MasBin,categories):
     for j in range(len(MidMas)):
         for i in range(len(MidMas[j]) - 1):
             MidMas[j][i] = categories[j][i]
-        MidMas[j].po
+        MidMas[j].pop()
     NewMasBin.append(MasBin[0])
     NewMasBin.append(MidMas[0])
     NewMasBin.append(MasBin[2])
