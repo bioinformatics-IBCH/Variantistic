@@ -1,12 +1,12 @@
 Sample name,Age,Phenotype,Sex,Diseased,Relativeness
-/data6/bio/human_genomics/phenomen/phen2016/A/B10/B11.fastq.sorted.bam,91,N,M,Healthy,0.56
+/data6/bio/human_genomics/phenomen/phen2016/A/B10/B11.fastq.sorted.bam,91,N,F,Healthy,0.56
 /data6/bio/human_genomics/phenomen/phen2016/A/B11/B11.fastq.sorted.bam,57,O,U,Healthy,0.66
 /data6/bio/human_genomics/phenomen/A/B12/B12.fastq.sorted.bam,63,N,F,Healthy,0.93
-/data6/bio/human_genomics/phenomen/A/B13/B13.fastq.sorted.bam,47,O,F,Healthy,0.36
-/data6/bio/human_genomics/phenomen/A/B14/B14.fastq.sorted.bam,65,O,M,Healthy,0.89
+/data6/bio/human_genomics/phenomen/A/B13/B13.fastq.sorted.bam,48,O,M,Healthy,0.36
+/data6/bio/human_genomics/phenomen/A/B14/B14.fastq.sorted.bam,85,O,M,Healthy,0.89
 /data6/bio/human_genomics/phenomen/A/B15/B15.fastq.sorted.bam,61,O,U,Healthy,0.59
 /data6/bio/human_genomics/phenomen/A/B16/B16.fastq.sorted.bam,102,N,F,Unknown,0.77
-/data6/bio/human_genomics/phenomen/A/B17/B17.fastq.sorted.bam,52,N,U,Healthy,0.21
+/data6/bio/human_genomics/phenomen/A/B17/B17.fastq.sorted.bam,52,N,M,Healthy,0.21
 /data6/bio/human_genomics/phenomen/A/B18/B18.fastq.sorted.bam,29,O,M,Unknown,0.85
 /data6/bio/human_genomics/phenomen/A/B19/B19.fastq.sorted.bam,49,O,F,Healthy,0.19
 /data6/bio/human_genomics/phenomen/phen2016/A/B1/B1.fastq.sorted.bam,81,N,F,Unknown,0.48
@@ -17,7 +17,7 @@ Sample name,Age,Phenotype,Sex,Diseased,Relativeness
 /data6/bio/human_genomics/phenomen/A/B24/B24.fastq.sorted.bam,99,N,M,Healthy,0.46
 /data6/bio/human_genomics/phenomen/A/B25/B25.fastq.sorted.bam,12,O,M,Unknown,0.46
 /data6/bio/human_genomics/phenomen/A/B26/B26.fastq.sorted.bam,90,O,M,Healthy,0.67
-/data6/bio/human_genomics/phenomen/A/B27/B27.fastq.sorted.bam,90,In,M,Unknown,0.73
+/data6/bio/human_genomics/phenomen/A/B27/B27.fastq.sorted.bam,90,In,F,Unknown,0.73
 /data6/bio/human_genomics/phenomen/A/B28/B28.fastq.sorted.bam,25,N,M,Unknown,0.99
 /data6/bio/human_genomics/phenomen/A/B29/B29.fastq.sorted.bam,73,O,M,Healthy,0.36
 /data6/bio/human_genomics/phenomen/phen2016/A/B2/B2.fastq.sorted.bam,13,O,M,Diseased,0.41

@@ -3,12 +3,12 @@ import numpy as np
 from cyvcf2 import VCF, Writer
 import json
 from sklearn.preprocessing import OrdinalEncoder
-from hist.Const import Bins, categorial_metadata, Sample_name
+from hist.Const import Bins, categorial_metadata, Sample_name, TrueBins, imp_meta
 
 def hist(vhod,meta,vihod):
     vcf_in = reading(vhod)
     vcf_out = Writer(vihod, vcf_in)
-    result,catalogs = prepare_meta(meta)
+    result = prepare_meta(meta)
     for rec in vcf_in:
         DPM = prepare_DP(rec)
         A = makeHist(result,DPM)
@@ -20,15 +20,15 @@ def hist(vhod,meta,vihod):
             {
                 'DP_HIST': {
                     'hist': A[0].tolist(),
-                    'edges': inverse(A[1],catalogs)
+                    'edges': inverse(A[1])
                 },
                 'AN_HIST': {
                     'hist': B[0].tolist(),
-                    'edges': inverse(B[1],catalogs)
+                    'edges': inverse(B[1])
                 },
                 'AC_HIST': {
                     'hist': C[0].tolist(),
-                    'edges': inverse(C[1],catalogs)
+                    'edges': inverse(C[1])
                 }
             }
         )
@@ -61,8 +61,8 @@ def prepare_meta(meta):
     for feature in categorial_metadata:
         csv[feature] = Y[feature]
     csv.index = csv[Sample_name]
-    csv = csv.iloc[:,1:]
-    return csv,enc.categories_
+    csv = csv[imp_meta]
+    return csv
 
 
 def prepare_DP(rec):
@@ -95,18 +95,13 @@ def makeHist(result,weight):
 		A[1][j] = A[1][j].tolist()
 	return A
 
-def inverse(MasBin,categories):
-    MidMas = [MasBin[1],MasBin[4]]
+def inverse(MasBin):
     NewMasBin =[]
-    for j in range(len(MidMas)):
-        for i in range(len(MidMas[j]) - 1):
-            MidMas[j][i] = categories[j][i]
-        MidMas[j].pop()
+    for j in range(1,len(MasBin)):
+        for i in range(len(MasBin[j]) - 1):
+            MasBin[j][i] = TrueBins[j][i]
+        MasBin[j].pop()
     NewMasBin.append(MasBin[0])
-    NewMasBin.append(MidMas[0])
+    NewMasBin.append(MasBin[1])
     NewMasBin.append(MasBin[2])
-    NewMasBin.append(MasBin[3])
-    NewMasBin.append(MidMas[1])
     return NewMasBin
-def writing():
-	return 0
