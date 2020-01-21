@@ -7,7 +7,7 @@ rule check_gz:
 		config["input_data"],
 		
 	output: 
-		config["Upgrade_input_data"]
+		config["upgrade_input_data"]
 	shell:
 		"python {var} check_gz --data {out}/{input}"
 
