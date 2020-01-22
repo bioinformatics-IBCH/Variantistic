@@ -1,11 +1,11 @@
-from hist.lib import makeHist
-from hist.Const import imp_meta, imp_meta_border
+from variantics.lib import makeHist
+from variantics.Const import imp_meta, imp_meta_border
 
 
 def validation(csv):
     checkWeight = [1]*len(csv)
-    CheckHist = makeHist(csv, checkWeight)
-    return not 1 in CheckHist[0].ravel()
+    checkHist = makeHist(csv, checkWeight)
+    return not 1 in checkHist[0].ravel()
 
 def Check_meta(csv):
 	for j in imp_meta:

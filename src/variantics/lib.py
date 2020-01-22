@@ -3,7 +3,7 @@ import numpy as np
 from cyvcf2 import VCF, Writer
 import json
 from sklearn.preprocessing import OrdinalEncoder
-from hist.Const import Bins, categorial_metadata, Sample_name, TrueBins, imp_meta
+from variantics.Const import Bins, categorial_metadata, sample_name, TrueBins, imp_meta
 
 def hist(vhod,meta,vihod):
     vcf_in = reading(vhod)
@@ -60,7 +60,7 @@ def prepare_meta(meta):
     Y = pandas.DataFrame(enc.transform(X), columns=categorial_metadata)
     for feature in categorial_metadata:
         csv[feature] = Y[feature]
-    csv.index = csv[Sample_name]
+    csv.index = csv[sample_name]
     csv = csv[imp_meta]
     return csv
 
