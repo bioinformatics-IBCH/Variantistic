@@ -15,19 +15,26 @@ rule merge:
 	input:
 		rules.check_gz.output
 	output:
-		temp("Horde.vcf")
+		"Horde.vcf"
 	shell:
 		"/usr/local/bin/bcftools merge -m all -i AC:sum,AN:sum --force-samples -l {input} -o Horde.vcf"
 
+rule PCA:
+	input:
+		rules.merge.output
+	output:
+		"PCA.tsv"
+	shell:
+		"Rscript --vanilla /home/Welekie/newworkspace/variantics/src/variantics/lib.R {input} 'PCA' "                    # костыль
 	
 rule start_extract:
 	input:
-		rules.merge.output
+		rules.PCA.output
 	output:
 		temp("ref_0.vcf.gz")
 		
 	shell:
-		"/usr/local/bin/bcftools +missing2ref {input} | /usr/local/bin/bcftools +fill-tags | bgzip -c  > {output[0]} "
+		"/usr/local/bin/bcftools +missing2ref 'Horde.vcf' | /usr/local/bin/bcftools +fill-tags | bgzip -c  > {output[0]} "
 
 
 rule filter:
@@ -46,6 +53,6 @@ rule final:
 	output:
 		"variant_statistics.tab.gz"
 	shell:
-		"/usr/local/bin/bcftools query -f'%CHROM\t%POS\t%REF\t%ALT\t%AN\t%AC\t%AC_Hom\t%AC_Hemi\t%AC_Het\n' {input[0]} | sed 's/chr//g' | bgzip -c > {output} && tabix -p vcf {output}"
+		"/usr/local/bin/bcftools query -f'%CHROM\t%POS\t%REF\t%ALT\t%AN\t%AC\t%AC_Hom\t%AC_Hemi\t%AC_Het\n' {input[0]} | sed 's/chr//g' | bgzip -c > {output} && tabix -p vcf {output}| rm -rf 'Horde.vcf'| rm -rf 'Horde.vcf.gds'| rm -rf 'data_list' | rm -rf 'data_list1'"
 
 
