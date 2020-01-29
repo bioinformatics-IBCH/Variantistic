@@ -1,44 +1,47 @@
 import os
+import json
 import subprocess
+
+from cyvcf2 import VCF, Writer
+import numpy as np
+import pandas
+from sklearn.preprocessing import OrdinalEncoder
+
+from variantics.constants import (
+    CATEGORIAL_METADATA,
+    SAMPLE_NAME_COLUMN,
+    METADATA_VALID_VALUES,
+    CATEGORY_BINS,
+    BINS
+)
 
 
 def check_gz(args):
     zapusk = open(args.data)
-    A = []
+    gzipped_data_list = []
     for line in zapusk:
         a = 'grabix check ' + line
-        print(line)
         if subprocess.check_output(a, shell=True) == b'no\n':
             a = 'bgzip ' + line
-            print(a)
             subprocess.check_output(a, shell=True)
             gzline = line.replace('.vcf', '.vcf.gz')
             a = 'tabix ' + gzline + '\n'
             subprocess.check_output(a, shell=True)
             gz_file_name = gzline + '\n'
-            A.append(gz_file_name)
+            gzipped_data_list.append(gz_file_name)
         else:
-            A.append(line)
+            gzipped_data_list.append(line)
     zapusk.close()
-    print(A)
-    data_list_path = "data_list1"
+    data_list_path = 'data_list1'
     with open(data_list_path, 'w') as f:
-        for line in A:
-            f.writelines([os.path.abspath(line.replace("\n", "")) + "\n"])
+        for line in gzipped_data_list:
+            f.writelines([os.path.abspath(line.replace('\n', '')) + '\n'])
     return 0
 
 
 def prepare(args):
-    a = "snakemake variant_statistics.tab.gz"
-    subprocess.check_output(a, shell=True)
-
-
-import pandas
-import numpy as np
-from cyvcf2 import VCF, Writer
-import json
-from sklearn.preprocessing import OrdinalEncoder
-from variantics.constants import Bins, categorial_metadata, sample_name, TrueBins, imp_meta
+    cmd = 'snakemake variant_statistics.tab.gz'
+    subprocess.check_output(cmd, shell=True)
 
 
 def hist(vhod, meta, vihod):
@@ -46,29 +49,29 @@ def hist(vhod, meta, vihod):
     vcf_out = Writer(vihod, vcf_in)
     result = prepare_meta(meta)
     for rec in vcf_in:
-        DPM = prepare_DP(rec)
-        A = makeHist(result, DPM)
-        ANM = prepare_AN(rec)
-        B = makeHist(result, ANM)
-        ACM = prepare_AC(rec)
-        C = makeHist(result, ACM)
-        VARIANTICS_HIST = json.dumps(
+        dpm = prepare_dp(rec)
+        dpm_hist = make_hist(result, dpm)
+        anm = prepare_an(rec)
+        anm_hist = make_hist(result, anm)
+        acm = prepare_ac(rec)
+        acm_hist = make_hist(result, acm)
+        variantics_hist = json.dumps(
             {
                 'DP_HIST': {
-                    'hist': A[0].tolist(),
-                    'edges': inverse(A[1])
+                    'hist': dpm_hist[0].tolist(),
+                    'edges': inverse(dpm_hist[1])
                 },
                 'AN_HIST': {
-                    'hist': B[0].tolist(),
-                    'edges': inverse(B[1])
+                    'hist': anm_hist[0].tolist(),
+                    'edges': inverse(anm_hist[1])
                 },
                 'AC_HIST': {
-                    'hist': C[0].tolist(),
-                    'edges': inverse(C[1])
+                    'hist': acm_hist[0].tolist(),
+                    'edges': inverse(acm_hist[1])
                 }
             }
         )
-        rec.INFO["VARIANTICS_HIST"] = VARIANTICS_HIST
+        rec.INFO['VARIANTICS_HIST'] = variantics_hist
         vcf_out.write_record(rec)
     vcf_in.close()
     vcf_out.close()
@@ -91,29 +94,29 @@ def reading(vhod):
 def prepare_meta(meta):
     csv = pandas.read_csv(meta, sep=',')
     enc = OrdinalEncoder()
-    X = csv.loc[:, categorial_metadata]
-    enc.fit(X)
-    Y = pandas.DataFrame(enc.transform(X), columns=categorial_metadata)
-    for feature in categorial_metadata:
-        csv[feature] = Y[feature]
-    csv.index = csv[sample_name]
-    csv = csv[imp_meta]
+    categ_meta = csv.loc[:, CATEGORIAL_METADATA]
+    enc.fit(categ_meta)
+    transformed_meta = pandas.DataFrame(enc.transform(categ_meta), columns=CATEGORIAL_METADATA)
+    for feature in CATEGORIAL_METADATA:
+        csv[feature] = transformed_meta[feature]
+    csv.index = csv[SAMPLE_NAME_COLUMN]
+    csv = csv[METADATA_VALID_VALUES.keys()]
     return csv
 
 
-def prepare_DP(rec):
+def prepare_dp(rec):
     return [
         max(rec[0], 0) for rec in rec.format('DP')
     ]
 
 
-def prepare_AN(rec):
+def prepare_an(rec):
     return [
         2 if sample != 2 else 0 for sample in rec.gt_types
     ]
 
 
-def prepare_AC(rec):
+def prepare_ac(rec):
     # gt_types is array of 0,1,2,3==HOM_REF, HET, UNKNOWN, HOM_ALT
     gt2ac = {
         1: 1,
@@ -126,20 +129,20 @@ def prepare_AC(rec):
     ]
 
 
-def makeHist(result, weight):
-    A = np.histogramdd(result.values, bins=Bins, weights=weight)
-    for j in range(len(A[1])):
-        A[1][j] = A[1][j].tolist()
-    return A
+def make_hist(result, weight):
+    histogram = np.histogramdd(result.values, bins=BINS, weights=weight)
+    for j in range(len(histogram[1])):
+        histogram[1][j] = histogram[1][j].tolist()
+    return histogram
 
 
-def inverse(MasBin):
-    NewMasBin = []
-    for j in range(1, len(MasBin)):
-        for i in range(len(MasBin[j]) - 1):
-            MasBin[j][i] = TrueBins[j][i]
-        MasBin[j].pop()
-    NewMasBin.append(MasBin[0])
-    NewMasBin.append(MasBin[1])
-    NewMasBin.append(MasBin[2])
-    return NewMasBin
+def inverse(mas_bin):
+    new_mas_bin = []
+    for j in range(1, len(mas_bin)):
+        for i in range(len(mas_bin[j]) - 1):
+            mas_bin[j][i] = CATEGORY_BINS[j][i]
+        mas_bin[j].pop()
+    new_mas_bin.append(mas_bin[0])
+    new_mas_bin.append(mas_bin[1])
+    new_mas_bin.append(mas_bin[2])
+    return new_mas_bin

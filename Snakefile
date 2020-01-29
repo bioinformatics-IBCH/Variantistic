@@ -2,6 +2,7 @@ configfile: "config.json"
 workdir: config["results_folder"]
 var = config["var"]
 out = config["results_folder"]
+
 rule check_gz:
 	input:
 		config["input_data"],

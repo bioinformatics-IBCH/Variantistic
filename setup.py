@@ -3,10 +3,10 @@
 import setuptools
 
 setuptools.setup(
-    name='fact',
+    name='variantics',
     version='1.0.0',
 
-    description='Example Python project',
+    description='Variantics',
 
     # Allow UTF-8 characters in README with encoding argument.
     long_description=open('README.md', encoding="utf-8").read(),
@@ -46,6 +46,6 @@ setuptools.setup(
     ],
 
     entry_points={
-        'console_scripts': ['fact=fact.cli:main'],
+        'console_scripts': ['variantics=variantics.variantics:main'],
     }
 )
