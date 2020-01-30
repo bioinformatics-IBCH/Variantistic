@@ -8,7 +8,7 @@ import pandas
 from sklearn.preprocessing import OrdinalEncoder
 
 from variantics.constants import (
-    CATEGORIAL_METADATA,
+    CATEGORICAL_METADATA,
     SAMPLE_NAME_COLUMN,
     METADATA_VALID_VALUES,
     CATEGORY_BINS,
@@ -94,10 +94,10 @@ def reading(vhod):
 def prepare_meta(meta):
     csv = pandas.read_csv(meta, sep=',')
     enc = OrdinalEncoder()
-    categ_meta = csv.loc[:, CATEGORIAL_METADATA]
+    categ_meta = csv.loc[:, CATEGORICAL_METADATA]
     enc.fit(categ_meta)
-    transformed_meta = pandas.DataFrame(enc.transform(categ_meta), columns=CATEGORIAL_METADATA)
-    for feature in CATEGORIAL_METADATA:
+    transformed_meta = pandas.DataFrame(enc.transform(categ_meta), columns=CATEGORICAL_METADATA)
+    for feature in CATEGORICAL_METADATA:
         csv[feature] = transformed_meta[feature]
     csv.index = csv[SAMPLE_NAME_COLUMN]
     csv = csv[METADATA_VALID_VALUES.keys()]
