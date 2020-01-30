@@ -7,6 +7,7 @@ install:
 before_script:
   - pip install tox-travis
   - pip install coveralls
+  - pip install cyvcf2 >= 0.11.5
 # command to run tests
 script: tox
 after_success: coveralls
