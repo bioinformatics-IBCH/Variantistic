@@ -3,11 +3,10 @@ language: python
 python:
   - "3.7"
 # command to install dependencies
-install:
 before_script:
+  - pip install Cython >= 0.29.13
   - pip install tox-travis
   - pip install coveralls
-  - pip install cython >= 0.29.13
 # command to run tests
 script: tox
 after_success: coveralls
