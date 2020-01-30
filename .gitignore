@@ -8,3 +8,4 @@ src/variantics.egg-info/
 tests/__pycache__/
 variantics/
 docs/
+.snakemake
