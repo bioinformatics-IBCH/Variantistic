@@ -2,12 +2,9 @@ sudo: false
 language: python
 python:
   - "3.7"
-# command to install dependencies
-before_install:
-  - pip3 install Cython >= 0.29.13
 before_script:
-  - pip3 install tox-travis
-  - pip3 install coveralls
+  - pip install tox-travis
+  - pip install coveralls
 # command to run tests
 script: tox
 after_success: coveralls

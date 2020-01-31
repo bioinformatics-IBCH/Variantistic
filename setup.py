@@ -13,7 +13,7 @@ setuptools.setup(
     keywords=['python'],
 
     author='',
-    url='https://github.com/johnthagen/python-blueprint',
+    url='https://github.com/bioinformatics-IBCH/variantics',
 
     packages=setuptools.find_packages('src'),
     package_dir={'': 'src'},

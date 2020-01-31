@@ -22,13 +22,10 @@ def check_gz(args):
     for line in zapusk:
         a = 'grabix check ' + line
         if subprocess.check_output(a, shell=True) == b'no\n':
-            a = 'bgzip ' + line
-            subprocess.check_output(a, shell=True)
-            gzline = line.replace('.vcf', '.vcf.gz')
-            a = 'tabix ' + gzline + '\n'
-            subprocess.check_output(a, shell=True)
-            gz_file_name = gzline + '\n'
-            gzipped_data_list.append(gz_file_name)
+            new_path = line + ".gz"
+            subprocess.check_output(f'bgzip {line} -c > {new_path}', shell=True)
+            subprocess.check_output(f'tabix {new_path}', shell=True)
+            gzipped_data_list.append(new_path)
         else:
             gzipped_data_list.append(line)
     zapusk.close()
@@ -40,7 +37,7 @@ def check_gz(args):
 
 
 def prepare(args):
-    cmd = 'snakemake variant_statistics.tab.gz'
+    cmd = 'snakemake --verbose variant_statistics.tab.gz'
     subprocess.check_output(cmd, shell=True)
 
 

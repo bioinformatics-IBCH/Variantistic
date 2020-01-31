@@ -1,7 +1,7 @@
 import os
 
 from variantics.lib import hist, make_hist, prepare_meta, inverse
-from variantics.valid import validation, check_meta
+from variantics.validation import validation, check_meta
 
 import pandas
 import pytest
