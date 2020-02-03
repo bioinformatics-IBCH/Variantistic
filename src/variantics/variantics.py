@@ -2,8 +2,6 @@
 
 import sys
 import argparse
-import os
-import json
 
 from exitstatus import ExitStatus
 
@@ -47,26 +45,6 @@ def main() -> ExitStatus:
     args = parse_args()
     if args.command == VarianticsCommands.PREPARE.value:
         ensure_folder_exists(args.output)
-
-        data_list_path = os.path.join(args.output, 'data_list')
-        config = {
-            'results_folder': args.output,
-            'input_data': data_list_path,
-            'processed_vcf_list': 'processed_vcf_list',
-            'metadata': args.metadata
-        }
-
-        with open(data_list_path, 'w') as f:
-            if not args.data.endswith('.vcf') and not args.data.endswith('.vcf.gz'):
-                f.writelines([
-                    os.path.abspath(line.replace('\n', '')) + '\n' for line in open(args.data, 'r').readlines()
-                ])
-            else:
-                f.write(os.path.abspath(args.data))
-
-        with open('config.json', 'w') as f:
-            json.dump(config, f)
-
         validate_metadata(args.metadata)
         prepare(args)
     elif args.command == VarianticsCommands.CREATE_HISTOGRAMS.value:

@@ -7,9 +7,9 @@ from variantics.validation import is_impersonal, validate_metadata
 import pandas
 import pytest
 
-TEST_VCF_PATH = 'tests/resources/A.vcf'
-TEST_METADATA_VCF_PATH = 'tests/resources/testik.csv'
-TEST_PROCESSED_VCF_PATH = 'tests/resources/A.exam.vcf'
+TEST_VCF_PATH = 'tests/resources/multisample.vcf'
+TEST_METADATA_VCF_PATH = 'tests/resources/metadata.csv'
+TEST_PROCESSED_VCF_PATH = 'tests/resources/multisample.resulting.vcf'
 
 
 @pytest.mark.parametrize(

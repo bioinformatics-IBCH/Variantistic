@@ -15,6 +15,25 @@ from variantics.categories import CATEGORIES, BINS
 
 
 def prepare(args):
+    data_list_path = os.path.join(args.output, 'data_list')
+    config = {
+        'results_folder': args.output,
+        'input_data': data_list_path,
+        'processed_vcf_list': 'processed_vcf_list',
+        'metadata': args.metadata
+    }
+
+    with open(data_list_path, 'w') as f:
+        if not args.data.endswith('.vcf') and not args.data.endswith('.vcf.gz'):
+            f.writelines([
+                os.path.abspath(line.replace('\n', '')) + '\n' for line in open(args.data, 'r').readlines()
+            ])
+        else:
+            f.write(os.path.abspath(args.data))
+
+    with open('config.json', 'w') as f:
+        json.dump(config, f)
+
     cmd = 'snakemake --verbose variant_statistics.tab.gz PCA.png'
     subprocess.check_output(cmd, shell=True)
 
