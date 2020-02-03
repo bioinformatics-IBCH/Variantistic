@@ -1,0 +1,11 @@
+.coverage
+.coverage.py37
+.idea
+.mypy_cache
+.tox
+htmlcov
+src/variantics.egg-info/
+tests/__pycache__
+src/variantics/__pycache__/
+.snakemake
+Makefile
