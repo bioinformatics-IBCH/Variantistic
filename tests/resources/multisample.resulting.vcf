@@ -1,0 +1,85 @@
+##fileformat=VCFv4.1
+##FILTER=<ID=PASS,Description="All filters passed">
+##samtoolsVersion=0.1.19-44428cd
+##reference=file:///data3/bio/human_genome/bwa_hg19/hg19_karyo_order.fa
+##contig=<ID=chr1,length=249250621>
+##contig=<ID=chr2,length=243199373>
+##contig=<ID=chr3,length=198022430>
+##contig=<ID=chr4,length=191154276>
+##contig=<ID=chr5,length=180915260>
+##contig=<ID=chr6,length=171115067>
+##contig=<ID=chr7,length=159138663>
+##contig=<ID=chr8,length=146364022>
+##contig=<ID=chr9,length=141213431>
+##contig=<ID=chr10,length=135534747>
+##contig=<ID=chr11,length=135006516>
+##contig=<ID=chr12,length=133851895>
+##contig=<ID=chr13,length=115169878>
+##contig=<ID=chr14,length=107349540>
+##contig=<ID=chr15,length=102531392>
+##contig=<ID=chr16,length=90354753>
+##contig=<ID=chr17,length=81195210>
+##contig=<ID=chr18,length=78077248>
+##contig=<ID=chr19,length=59128983>
+##contig=<ID=chr20,length=63025520>
+##contig=<ID=chr21,length=48129895>
+##contig=<ID=chr22,length=51304566>
+##contig=<ID=chrX,length=155270560>
+##contig=<ID=chrY,length=59373566>
+##contig=<ID=chrM,length=16571>
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw read depth">
+##INFO=<ID=DP4,Number=4,Type=Integer,Description="# high-quality ref-forward bases, ref-reverse, alt-forward and alt-reverse bases">
+##INFO=<ID=MQ,Number=1,Type=Integer,Description="Root-mean-square mapping quality of covering reads">
+##INFO=<ID=FQ,Number=1,Type=Float,Description="Phred probability of all samples being the same">
+##INFO=<ID=AF1,Number=1,Type=Float,Description="Max-likelihood estimate of the first ALT allele frequency (assuming HWE)">
+##INFO=<ID=AC1,Number=1,Type=Float,Description="Max-likelihood estimate of the first ALT allele count (no HWE assumption)">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=IS,Number=2,Type=Float,Description="Maximum number of reads supporting an indel and fraction of indel reads">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes for each ALT allele, in the same order as listed">
+##INFO=<ID=G3,Number=3,Type=Float,Description="ML estimate of genotype frequencies">
+##INFO=<ID=HWE,Number=1,Type=Float,Description="Chi^2 based HWE test P-value based on G3">
+##INFO=<ID=CLR,Number=1,Type=Integer,Description="Log ratio of genotype likelihoods with and without the constraint">
+##INFO=<ID=UGT,Number=1,Type=String,Description="The most probable unconstrained genotype configuration in the trio">
+##INFO=<ID=CGT,Number=1,Type=String,Description="The most probable constrained genotype configuration in the trio">
+##INFO=<ID=PV4,Number=4,Type=Float,Description="P-values for strand bias, baseQ bias, mapQ bias and tail distance bias">
+##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
+##INFO=<ID=PC2,Number=2,Type=Integer,Description="Phred probability of the nonRef allele frequency in group1 samples being larger (,smaller) than in group2.">
+##INFO=<ID=PCHI2,Number=1,Type=Float,Description="Posterior weighted chi^2 P-value for testing the association between group1 and group2 samples.">
+##INFO=<ID=QCHI2,Number=1,Type=Integer,Description="Phred scaled PCHI2.">
+##INFO=<ID=PR,Number=1,Type=Integer,Description="# permutations yielding a smaller PCHI2.">
+##INFO=<ID=QBD,Number=1,Type=Float,Description="Quality by Depth: QUAL/#reads">
+##INFO=<ID=RPB,Number=1,Type=Float,Description="Read Position Bias">
+##INFO=<ID=MDV,Number=1,Type=Integer,Description="Maximum number of high-quality nonRef reads in samples">
+##INFO=<ID=VDB,Number=1,Type=Float,Description="Variant Distance Bias (v2) for filtering splice-site artefacts in RNA-seq data. Note: this version may be broken.">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=GL,Number=3,Type=Float,Description="Likelihoods for RR,RA,AA genotypes (R=ref,A=alt)">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="# high-quality bases">
+##FORMAT=<ID=DV,Number=1,Type=Integer,Description="# high-quality non-reference bases">
+##FORMAT=<ID=SP,Number=1,Type=Integer,Description="Phred-scaled strand bias P-value">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
+##FILTER=<ID=StrandBias,Description="Min P-value for strand bias (INFO/PV4) [0.0001]">
+##FILTER=<ID=EndDistBias,Description="Min P-value for end distance bias (INFO/PV4) [0.0001]">
+##FILTER=<ID=MaxDP,Description="Maximum read depth (INFO/DP or INFO/DP4) [10000000]">
+##FILTER=<ID=BaseQualBias,Description="Min P-value for baseQ bias (INFO/PV4) [0]">
+##FILTER=<ID=MinMQ,Description="Minimum RMS mapping quality for SNPs (INFO/MQ) [30]">
+##FILTER=<ID=Qual,Description="Minimum value of the QUAL field [30]">
+##FILTER=<ID=VDB,Description="Minimum Variant Distance Bias (INFO/VDB) [0]">
+##FILTER=<ID=GapWin,Description="Window size for filtering adjacent gaps [3]">
+##FILTER=<ID=MapQualBias,Description="Min P-value for mapQ bias (INFO/PV4) [0]">
+##FILTER=<ID=SnpGap,Description="SNP within INT bp around a gap to be filtered [10]">
+##FILTER=<ID=RefN,Description="Reference base is N []">
+##FILTER=<ID=MinDP,Description="Minimum read depth (INFO/DP or INFO/DP4) [22]">
+##source_20160726.1=vcf-annotate(r797) -f +/d=22/q=30/Q=30/-a
+##source_20160727.1=vcf-annotate(r797) -f +/d=22/q=30/Q=30/-a
+##source_20160731.1=vcf-annotate(r797) -f +/d=22/q=30/Q=30/-a
+##source_20160801.1=vcf-annotate(r797) -f +/d=22/q=30/Q=30/-a
+##source_20160809.1=vcf-annotate(r797) -f +/d=22/q=30/Q=30/-a
+##source_20160908.1=vcf-annotate(r797) -f +/d=22/q=30/Q=30/-a
+##source_20160914.1=vcf-annotate(r797) -f +/d=22/q=30/Q=30/-a
+##source_20160915.1=vcf-annotate(r797) -f +/d=22/q=30/Q=30/-a
+##bcftools_mergeVersion=1.7+htslib-1.7
+##bcftools_mergeCommand=merge -m all -i AC:sum,AN:sum -l /data7a/bio/human_genomics/phenomen/exomes/groups_comparison/merge_A.list; Date=Fri May 31 08:24:11 2019
+##INFO=<ID=VARIANTICS_HIST,Number=1,Type=String,Description="Dict of histograms">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	/data6/bio/human_genomics/phenomen/phen2016/A/A10/A10.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/phen2016/A/A11/A11.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A12/A12.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A13/A13.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A14/A14.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A15/A15.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A16/A16.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A17/A17.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A18/A18.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A19/A19.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/phen2016/A/A1/A1.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A20/A20.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A21/A21.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A22/A22.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A23/A23.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A24/A24.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A25/A25.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A26/A26.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A27/A27.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A28/A28.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A29/A29.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/phen2016/A/A2/A2.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A30/A30.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A31/A31.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A32/A32.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A33/A33.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A34/A34.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A35/A35.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A39/A39.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/phen2016/A/A3/A3.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A40/A40.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A42/A42.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A43/A43.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A44/A44.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A45/A45.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A46/A46.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A47/A47.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A48/A48.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/phen2016/A/A4/A4.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A5/A5.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/A/A6/A6.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/phen2016/A/A7/A7.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/phen2016/A/A8/A8.fastq.sorted.bam	/data6/bio/human_genomics/phenomen/phen2016/A/A9/A9.fastq.sorted.bam
+chr1	69511	.	A	G	211	MinMQ;Qual;MinDP;EndDistBias	DP=214;VDB=0.000396074;RPB=-0.0329918;AF1=1;AC1=2;DP4=0,1,128,81;MQ=10;FQ=-282;PV4=0.39,1,0.12,0.16;AN=54;AC=54;VARIANTICS_HIST={"DP_HIST": {"bins": [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[99.0, 0.0, 0.0], [99.0, 0.0, 198.0], [0.0, 0.0, 0.0]], [[198.0, 495.0, 0.0], [99.0, 198.0, 297.0], [0.0, 198.0, 0.0]], [[99.0, 297.0, 99.0], [0.0, 198.0, 99.0], [0.0, 0.0, 0.0]]], "edges": [[-10000, 1, 25, 66, 10000], ["F", "M", "U"], ["Diseased", "Healthy", "Unknown"]]}, "AN_HIST": {"bins": [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[2.0, 0.0, 0.0], [2.0, 0.0, 4.0], [0.0, 0.0, 0.0]], [[4.0, 10.0, 0.0], [2.0, 4.0, 6.0], [0.0, 6.0, 0.0]], [[2.0, 6.0, 4.0], [0.0, 4.0, 2.0], [0.0, 0.0, 0.0]]], "edges": [[-10000, 1, 25, 66, 10000], ["F", "M", "U"], ["Diseased", "Healthy", "Unknown"]]}, "AC_HIST": {"bins": [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[2.0, 0.0, 0.0], [2.0, 0.0, 4.0], [0.0, 0.0, 0.0]], [[4.0, 10.0, 0.0], [2.0, 4.0, 6.0], [0.0, 2.0, 0.0]], [[2.0, 6.0, 3.0], [0.0, 3.0, 2.0], [0.0, 0.0, 0.0]]], "edges": [[-10000, 1, 25, 66, 10000], ["F", "M", "U"], ["Diseased", "Healthy", "Unknown"]]}, "SAMPLE_COUNT_HIST": {"bins": [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[1.0, 0.0, 0.0], [1.0, 0.0, 2.0], [1.0, 0.0, 0.0]], [[5.0, 6.0, 1.0], [2.0, 3.0, 4.0], [0.0, 3.0, 0.0]], [[2.0, 4.0, 2.0], [1.0, 4.0, 2.0], [0.0, 0.0, 0.0]]], "edges": [[-10000, 1, 25, 66, 10000], ["F", "M", "U"], ["Diseased", "Healthy", "Unknown"]]}}	GT:PL:DP	0/1:83,255,0:99	0/0:90,255,0:99	1/1:110,255,0:99	./.:.:.	./.:4,.,.:.	1/1:91,255,0:99	1/1:79,255,0:99	0/0:.:.	1/1:99,255,0:99	1/1:106,255,0:99	0/1:0,.,.:.	1/1:89,238,0:99	1/1:90,255,0:99	./.:.:.	1/1:93,255,0:99	1/1:87,255,0:99	1/1:96,255,0:99	./.:.:.	./.:.:.	1/1:88,255,0:99	./.:.:.	1/1:100,255,0:99	./.:.:.	./.:.:.	1/1:97,255,0:99	1/1:100,255,0:99	1/1:100,255,0:99	1/1:92,255,0:99	1/1:87,255,0:99	1/1:100,217,0:99	./.:.:.	./.:.:.	./.:.:.	1/1:102,255,0:99	1/1:94,220,0:99	./.:.:.	1/1:119,255,0:99	1/1:108,226,0:99	./.:.:.	./.:12,.,.:.	1/1:122,255,0:99	1/1:85,255,0:99	1/1:89,255,0:99	./.:.:.
