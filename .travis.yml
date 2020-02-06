@@ -1,6 +1,8 @@
+language: python
+
 services:
   docker
 before_install:
   - docker build -t variantics .
+script:
   - docker run variantics bash -c 'tox'
-script: tox
